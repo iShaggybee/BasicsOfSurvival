@@ -21,5 +21,9 @@
 			</array>
 		</dict>
 	</dict>
+	<key>UIAppFonts</key>
+	<array>
+		<string>Cera Pro.otf</string>
+	</array>
 </dict>
 </plist>
