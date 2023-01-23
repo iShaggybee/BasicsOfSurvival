@@ -1,0 +1,1022 @@
+From b0ad29bfda85b2e13d830a0263c93a13866a4b96 Mon Sep 17 00:00:00 2001
+From: Vadim Kislov <kislov.v@gmail.com>
+Date: Mon, 23 Jan 2023 15:01:50 +0300
+Subject: [PATCH] feat: add podcasts component
+
+---
+ .../Assets.xcassets/Contents.json             |   6 +
+ .../image-not-found.imageset/Contents.json    |  21 ++++
+ .../image-not-found.jpg                       | Bin 0 -> 42883 bytes
+ .../timer.imageset/Contents.json              |  21 ++++
+ .../Assets.xcassets/timer.imageset/Image.png  | Bin 0 -> 1046 bytes
+ .../Protocols/PodcastCellModel.swift          |  13 +++
+ .../Protocols/PodcastsViewDelegate.swift      |  20 ++++
+ .../PodcastCollectionViewCell.swift           |  47 ++++++++
+ .../PodcastCollectionViewCell.xib             | 110 ++++++++++++++++++
+ .../PodcastImageView/PodcastImageView.swift   |  66 +++++++++++
+ .../PodcastsCollectionView.swift              |  34 ++++++
+ .../Views/PodcastsView/PodcastsView.swift     |  66 +++++++++++
+ .../Views/PodcastsView/PodcastsView.xib       |  69 +++++++++++
+ 13 files changed, 473 insertions(+)
+ create mode 100644 BasicsOfSurvival.git/BasicsOfSurvival.git/Component_Kislov_Vadim/Assets.xcassets/Contents.json
+ create mode 100644 BasicsOfSurvival.git/BasicsOfSurvival.git/Component_Kislov_Vadim/Assets.xcassets/image-not-found.imageset/Contents.json
+ create mode 100644 BasicsOfSurvival.git/BasicsOfSurvival.git/Component_Kislov_Vadim/Assets.xcassets/image-not-found.imageset/image-not-found.jpg
+ create mode 100644 BasicsOfSurvival.git/BasicsOfSurvival.git/Component_Kislov_Vadim/Assets.xcassets/timer.imageset/Contents.json
+ create mode 100644 BasicsOfSurvival.git/BasicsOfSurvival.git/Component_Kislov_Vadim/Assets.xcassets/timer.imageset/Image.png
+ create mode 100644 BasicsOfSurvival.git/BasicsOfSurvival.git/Component_Kislov_Vadim/Protocols/PodcastCellModel.swift
+ create mode 100644 BasicsOfSurvival.git/BasicsOfSurvival.git/Component_Kislov_Vadim/Protocols/PodcastsViewDelegate.swift
+ create mode 100644 BasicsOfSurvival.git/BasicsOfSurvival.git/Component_Kislov_Vadim/Views/PodcastCollectionViewCell/PodcastCollectionViewCell.swift
+ create mode 100644 BasicsOfSurvival.git/BasicsOfSurvival.git/Component_Kislov_Vadim/Views/PodcastCollectionViewCell/PodcastCollectionViewCell.xib
+ create mode 100644 BasicsOfSurvival.git/BasicsOfSurvival.git/Component_Kislov_Vadim/Views/PodcastImageView/PodcastImageView.swift
+ create mode 100644 BasicsOfSurvival.git/BasicsOfSurvival.git/Component_Kislov_Vadim/Views/PodcastsCollectionView/PodcastsCollectionView.swift
+ create mode 100644 BasicsOfSurvival.git/BasicsOfSurvival.git/Component_Kislov_Vadim/Views/PodcastsView/PodcastsView.swift
+ create mode 100644 BasicsOfSurvival.git/BasicsOfSurvival.git/Component_Kislov_Vadim/Views/PodcastsView/PodcastsView.xib
+
+diff --git a/BasicsOfSurvival.git/BasicsOfSurvival.git/Component_Kislov_Vadim/Assets.xcassets/Contents.json b/BasicsOfSurvival.git/BasicsOfSurvival.git/Component_Kislov_Vadim/Assets.xcassets/Contents.json
+new file mode 100644
+index 0000000..73c0059
+--- /dev/null
++++ b/BasicsOfSurvival.git/BasicsOfSurvival.git/Component_Kislov_Vadim/Assets.xcassets/Contents.json
+@@ -0,0 +1,6 @@
++{
++  "info" : {
++    "author" : "xcode",
++    "version" : 1
++  }
++}
+diff --git a/BasicsOfSurvival.git/BasicsOfSurvival.git/Component_Kislov_Vadim/Assets.xcassets/image-not-found.imageset/Contents.json b/BasicsOfSurvival.git/BasicsOfSurvival.git/Component_Kislov_Vadim/Assets.xcassets/image-not-found.imageset/Contents.json
+new file mode 100644
+index 0000000..9981d3e
+--- /dev/null
++++ b/BasicsOfSurvival.git/BasicsOfSurvival.git/Component_Kislov_Vadim/Assets.xcassets/image-not-found.imageset/Contents.json
+@@ -0,0 +1,21 @@
++{
++  "images" : [
++    {
++      "filename" : "image-not-found.jpg",
++      "idiom" : "universal",
++      "scale" : "1x"
++    },
++    {
++      "idiom" : "universal",
++      "scale" : "2x"
++    },
++    {
++      "idiom" : "universal",
++      "scale" : "3x"
++    }
++  ],
++  "info" : {
++    "author" : "xcode",
++    "version" : 1
++  }
++}
+diff --git a/BasicsOfSurvival.git/BasicsOfSurvival.git/Component_Kislov_Vadim/Assets.xcassets/image-not-found.imageset/image-not-found.jpg b/BasicsOfSurvival.git/BasicsOfSurvival.git/Component_Kislov_Vadim/Assets.xcassets/image-not-found.imageset/image-not-found.jpg
+new file mode 100644
+index 0000000000000000000000000000000000000000..e0525686a86f3286cec2f2683f85572b05d2d3d6
+GIT binary patch
+literal 42883
+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
+a)*b{gLpk}$$?o{`_MX@79O#Mun)yF{=;Yo2
+
+literal 0
+HcmV?d00001
+
+diff --git a/BasicsOfSurvival.git/BasicsOfSurvival.git/Component_Kislov_Vadim/Assets.xcassets/timer.imageset/Contents.json b/BasicsOfSurvival.git/BasicsOfSurvival.git/Component_Kislov_Vadim/Assets.xcassets/timer.imageset/Contents.json
+new file mode 100644
+index 0000000..17f6fd9
+--- /dev/null
++++ b/BasicsOfSurvival.git/BasicsOfSurvival.git/Component_Kislov_Vadim/Assets.xcassets/timer.imageset/Contents.json
+@@ -0,0 +1,21 @@
++{
++  "images" : [
++    {
++      "filename" : "Image.png",
++      "idiom" : "universal",
++      "scale" : "1x"
++    },
++    {
++      "idiom" : "universal",
++      "scale" : "2x"
++    },
++    {
++      "idiom" : "universal",
++      "scale" : "3x"
++    }
++  ],
++  "info" : {
++    "author" : "xcode",
++    "version" : 1
++  }
++}
+diff --git a/BasicsOfSurvival.git/BasicsOfSurvival.git/Component_Kislov_Vadim/Assets.xcassets/timer.imageset/Image.png b/BasicsOfSurvival.git/BasicsOfSurvival.git/Component_Kislov_Vadim/Assets.xcassets/timer.imageset/Image.png
+new file mode 100644
+index 0000000000000000000000000000000000000000..704739c8f40c31eb684ba9a7164081ca39355208
+GIT binary patch
+literal 1046
+zcmV+x1nK*UP)<h;3K|Lk000e1NJLTq001BW001Be1^@s6b9#F800004XF*Lt00UcI
+zT>mC`0000)WmrjOO-%qQ0000800D<-00aO40096102%-Q00003paB2_0000100961
+zpaK8{000010000WpaTE|000010000W00000tcGIq000AhNkl<ZSPA7;O;RE;6s8d=
+zOI`F0Y;Vw<K;{G^3s7M(a02lJ!U@z9G%hR@7BD9ePat!G=^G5QfQ^6ieQnZ}=_F0J
+zGgY&gRE4~}_r3SNyo96+h5x-dc?&QajoQUx@xbKw^78Wa=;&x_ve|Scn;}IXyuQ8~
+z&5q+7!jOwV(HJRRd1W($*tN}O)92m-TOgZ$JRV=Xy}fl&onF0O?<aA&2@HorkEPz&
+z*x1A9G9VHx(7)jf%uY^DLNy7_%n!^XoQXtc0!Umfl}hJGR8<og<T-R#jYeZY+wJXb
+z7l-zOGFy_wS^``#5(gO)zh@A?NHlwXe(ta$cXxL^%+DnNmHGtzjPuk(i1PU;^}U*$
+zff1mCzK>Np?1)nVriOmapltM^@6FAPkH2OQ^ZvV~P{3hbNZDEeuABh?^ay5R1UW-O
+zme|^oegG~&w!%tqL6BX!dIqr)0QfuX9zk3gR?()cHl7Qvrqya`q;UEN@cSb0;c~gG
+zbUK}Q<uZ<O3*dYXfG0pxQ*yaIo12@DBqFf!fWKUuRTBztdwaVZ8x=t#FquqTFmDS?
+zh?1QtcvbY}1Y6}vSsihBYnVr?2AR_!2wc@pStIcD^mGWlM<Ywmy`%h*R;$%`KggTY
+z-Pze;?BAM30RP#~5`q04Ncp2<xm><fd=C^k5;X!~><Q5PPgXAzu?mnwF|Ud-9!vy$
+zTCrzz{3{Jror^$TGN4940#J!i%Iiklc&TJ@kbl}@m<U9{Pyx^8L_P0%knFQJo6Tt&
+z78TeNc8#d^L4w2~g8J-fL22U^yADIU5-UvNwF&_IAV99^f=LEgHy1Hnftx4s8UgIr
+zRDy8J$*WYVa*t{Z#J)}jaFPnnaTVXA5>?7@il0u-^E6)9z&{F~5a(t;>919Q0G#T+
+z1mc<vP)1MAvyQ@NBJo&A98>Bz8VQK!QeL6avz&(nvFcNf8}$k?2Wny|8@GT)K1!$r
+zw}NGi8vY?Y=&bJpADi9X-Bb8<;ou6lIZ9s<vNl)=5J?hvoC1i43C}53^?*bR>OsuK
+zf1USy6<sEVSeW8F0G|Q+cL0rSsRZ63@rUIp=AP8885bbfKR!ObT!YI-fI-9=;FmE=
+z?3)6k5;In2wOU=Kty=ZXQ~}k2GWU9GYs*L3T_kjI;N~cGm^EoK-anoH0<;{MzCa-H
+QVE_OC07*qoM6N<$f<EcHa{vGU
+
+literal 0
+HcmV?d00001
+
+diff --git a/BasicsOfSurvival.git/BasicsOfSurvival.git/Component_Kislov_Vadim/Protocols/PodcastCellModel.swift b/BasicsOfSurvival.git/BasicsOfSurvival.git/Component_Kislov_Vadim/Protocols/PodcastCellModel.swift
+new file mode 100644
+index 0000000..07949ec
+--- /dev/null
++++ b/BasicsOfSurvival.git/BasicsOfSurvival.git/Component_Kislov_Vadim/Protocols/PodcastCellModel.swift
+@@ -0,0 +1,13 @@
++//
++//  PodcastCellModel.swift
++//  BasicsOfSurvival.git
++//
++//  Created by Kislov Vadim on 21.01.2023.
++//
++
++protocol PodcastCellModel {
++    var title: String { get set }
++    var imageUrl: String { get set }
++    var duration: Int { get set }
++    var url: String { get set }
++}
+diff --git a/BasicsOfSurvival.git/BasicsOfSurvival.git/Component_Kislov_Vadim/Protocols/PodcastsViewDelegate.swift b/BasicsOfSurvival.git/BasicsOfSurvival.git/Component_Kislov_Vadim/Protocols/PodcastsViewDelegate.swift
+new file mode 100644
+index 0000000..29276d5
+--- /dev/null
++++ b/BasicsOfSurvival.git/BasicsOfSurvival.git/Component_Kislov_Vadim/Protocols/PodcastsViewDelegate.swift
+@@ -0,0 +1,20 @@
++//
++//  PodcastCollectionViewDelegate.swift
++//  BasicsOfSurvival.git
++//
++//  Created by Kislov Vadim on 21.01.2023.
++//
++
++protocol PodcastsViewDelegate {
++    // Открытие ссылки на соответствующий подкаст ВК
++    func openPodcastUrl(for item: Int)
++    
++    // Раскрытие списка всех доступных подкастов
++    func showAllPodcasts()
++    
++    // Получить количество подкастов
++    func getPodcastsCount() -> Int
++    
++    // Получить подкаст из массива подкастов
++    func getPodcast(for item: Int) -> PodcastCellModel
++}
+diff --git a/BasicsOfSurvival.git/BasicsOfSurvival.git/Component_Kislov_Vadim/Views/PodcastCollectionViewCell/PodcastCollectionViewCell.swift b/BasicsOfSurvival.git/BasicsOfSurvival.git/Component_Kislov_Vadim/Views/PodcastCollectionViewCell/PodcastCollectionViewCell.swift
+new file mode 100644
+index 0000000..303703d
+--- /dev/null
++++ b/BasicsOfSurvival.git/BasicsOfSurvival.git/Component_Kislov_Vadim/Views/PodcastCollectionViewCell/PodcastCollectionViewCell.swift
+@@ -0,0 +1,47 @@
++//
++//  PodcastCollectionViewCell.swift
++//  BasicsOfSurvival.git
++//
++//  Created by Kislov Vadim on 21.01.2023.
++//
++
++import UIKit
++
++class PodcastCollectionViewCell: UICollectionViewCell {
++    @IBOutlet var podcastImageView: PodcastImageView!
++    @IBOutlet var podcastTitleLable: UILabel!
++    @IBOutlet var podcastDurationLabel: UILabel!
++    
++    public func configure(podcast: PodcastCellModel) {
++        podcastTitleLable.text = podcast.title
++        podcastDurationLabel.text = transformDuration(from: podcast.duration)
++
++        podcastImageView.setImage(from: podcast.imageUrl)
++    }
++
++    private func transformDuration(from seconds: Int) -> String {
++        if (seconds < 60) {
++            return "\(seconds)с"
++        }
++        
++        let hours = seconds / 3600
++        
++        if hours == 0 {
++            let minutes = seconds / 60
++            let seconds = seconds % 60
++            
++            return seconds == 0 ? "\(minutes)м" : "\(minutes)м \(seconds)с"
++        } else {
++            let minutes = (seconds - hours * 3600) / 60
++            
++            return minutes == 0 ? "\(hours)ч" : "\(hours)ч \(minutes)м"
++        }
++    }
++}
++
++extension PodcastCollectionViewCell {
++    static func getReuseIdentifier() -> String {
++        String(describing: self)
++    }
++}
++
+diff --git a/BasicsOfSurvival.git/BasicsOfSurvival.git/Component_Kislov_Vadim/Views/PodcastCollectionViewCell/PodcastCollectionViewCell.xib b/BasicsOfSurvival.git/BasicsOfSurvival.git/Component_Kislov_Vadim/Views/PodcastCollectionViewCell/PodcastCollectionViewCell.xib
+new file mode 100644
+index 0000000..0b64754
+--- /dev/null
++++ b/BasicsOfSurvival.git/BasicsOfSurvival.git/Component_Kislov_Vadim/Views/PodcastCollectionViewCell/PodcastCollectionViewCell.xib
+@@ -0,0 +1,110 @@
++<?xml version="1.0" encoding="UTF-8"?>
++<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="21507" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
++    <device id="retina6_12" orientation="portrait" appearance="light"/>
++    <dependencies>
++        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="21505"/>
++        <capability name="System colors in document resources" minToolsVersion="11.0"/>
++        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
++    </dependencies>
++    <objects>
++        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
++        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
++        <view contentMode="scaleToFill" id="iN0-l3-epB" customClass="PodcastCollectionViewCell" customModule="BasicsOfSurvival_git" customModuleProvider="target">
++            <rect key="frame" x="0.0" y="0.0" width="162" height="230"/>
++            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
++            <subviews>
++                <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="uvV-Hx-TEB" customClass="PodcastImageView" customModule="BasicsOfSurvival_git" customModuleProvider="target">
++                    <rect key="frame" x="0.0" y="0.0" width="162" height="154"/>
++                    <constraints>
++                        <constraint firstAttribute="width" constant="162" id="2Sy-vc-uLx"/>
++                        <constraint firstAttribute="height" constant="154" id="tlL-E1-4cu"/>
++                    </constraints>
++                </imageView>
++                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="IZ9-H6-DMt">
++                    <rect key="frame" x="0.0" y="165" width="162" height="64"/>
++                    <subviews>
++                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" usesAttributedText="YES" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="QVW-Hk-TXY">
++                            <rect key="frame" x="0.0" y="0.0" width="162" height="18.666666666666668"/>
++                            <attributedString key="attributedText">
++                                <fragment content="Label">
++                                    <attributes>
++                                        <color key="NSColor" name="textColor" catalog="System" colorSpace="catalog"/>
++                                        <font key="NSFont" size="16" name="SFProDisplay-Medium"/>
++                                        <font key="NSOriginalFont" size="16" name="AlNile"/>
++                                        <paragraphStyle key="NSParagraphStyle" alignment="natural" lineBreakMode="wordWrapping" baseWritingDirection="natural" lineSpacing="2" tighteningFactorForTruncation="0.0"/>
++                                    </attributes>
++                                </fragment>
++                            </attributedString>
++                            <nil key="highlightedColor"/>
++                        </label>
++                        <stackView opaque="NO" contentMode="scaleToFill" spacing="4" translatesAutoresizingMaskIntoConstraints="NO" id="Our-So-u64">
++                            <rect key="frame" x="0.0" y="26.666666666666657" width="162" height="16"/>
++                            <subviews>
++                                <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="timer" translatesAutoresizingMaskIntoConstraints="NO" id="WVf-0O-k57">
++                                    <rect key="frame" x="0.0" y="0.0" width="16" height="16"/>
++                                    <constraints>
++                                        <constraint firstAttribute="width" secondItem="WVf-0O-k57" secondAttribute="height" multiplier="1:1" id="5Qv-al-61v"/>
++                                        <constraint firstAttribute="height" constant="16" id="9lO-NC-3kH"/>
++                                    </constraints>
++                                </imageView>
++                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" usesAttributedText="YES" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="suR-tH-XLk">
++                                    <rect key="frame" x="20" y="0.0" width="142" height="16"/>
++                                    <attributedString key="attributedText">
++                                        <fragment content="Label">
++                                            <attributes>
++                                                <color key="NSColor" systemColor="systemGrayColor"/>
++                                                <font key="NSFont" size="14" name="SFProDisplay-Regular"/>
++                                            </attributes>
++                                        </fragment>
++                                    </attributedString>
++                                    <nil key="highlightedColor"/>
++                                </label>
++                            </subviews>
++                            <constraints>
++                                <constraint firstAttribute="height" constant="16" id="91e-Tn-JL7"/>
++                            </constraints>
++                        </stackView>
++                    </subviews>
++                    <color key="backgroundColor" systemColor="systemBackgroundColor"/>
++                    <constraints>
++                        <constraint firstAttribute="height" constant="64" id="1fP-Zm-T5l"/>
++                        <constraint firstAttribute="trailing" secondItem="Our-So-u64" secondAttribute="trailing" id="5Fk-fw-YSD"/>
++                        <constraint firstAttribute="trailing" secondItem="QVW-Hk-TXY" secondAttribute="trailing" id="5rW-yu-8k0"/>
++                        <constraint firstItem="QVW-Hk-TXY" firstAttribute="leading" secondItem="IZ9-H6-DMt" secondAttribute="leading" id="L25-VC-NhQ"/>
++                        <constraint firstItem="QVW-Hk-TXY" firstAttribute="bottom" secondItem="Our-So-u64" secondAttribute="top" constant="-8" id="MP8-OD-JXt"/>
++                        <constraint firstItem="Our-So-u64" firstAttribute="leading" secondItem="IZ9-H6-DMt" secondAttribute="leading" id="alr-He-Dh1"/>
++                        <constraint firstItem="QVW-Hk-TXY" firstAttribute="top" secondItem="IZ9-H6-DMt" secondAttribute="top" id="egY-LB-Wm2"/>
++                    </constraints>
++                </view>
++            </subviews>
++            <color key="backgroundColor" systemColor="systemBackgroundColor"/>
++            <constraints>
++                <constraint firstItem="IZ9-H6-DMt" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" id="9ah-7I-j0V"/>
++                <constraint firstItem="IZ9-H6-DMt" firstAttribute="top" secondItem="uvV-Hx-TEB" secondAttribute="bottom" constant="11" id="CxY-b0-J83"/>
++                <constraint firstItem="uvV-Hx-TEB" firstAttribute="trailing" secondItem="iN0-l3-epB" secondAttribute="trailing" id="GL0-dC-2Yw"/>
++                <constraint firstItem="uvV-Hx-TEB" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" id="NMP-bK-7iu"/>
++                <constraint firstItem="IZ9-H6-DMt" firstAttribute="bottom" relation="lessThanOrEqual" secondItem="iN0-l3-epB" secondAttribute="bottom" id="YBe-Su-8vw"/>
++                <constraint firstItem="IZ9-H6-DMt" firstAttribute="trailing" secondItem="iN0-l3-epB" secondAttribute="trailing" id="gtl-t8-IfH"/>
++                <constraint firstItem="uvV-Hx-TEB" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" id="zyt-xy-nIi"/>
++            </constraints>
++            <nil key="simulatedTopBarMetrics"/>
++            <nil key="simulatedBottomBarMetrics"/>
++            <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
++            <connections>
++                <outlet property="podcastDurationLabel" destination="suR-tH-XLk" id="ZnY-Yo-Uv7"/>
++                <outlet property="podcastImageView" destination="uvV-Hx-TEB" id="uzb-eb-Xp6"/>
++                <outlet property="podcastTitleLable" destination="QVW-Hk-TXY" id="ywk-dO-VOb"/>
++            </connections>
++            <point key="canvasLocation" x="-80.916030534351137" y="-192.25352112676057"/>
++        </view>
++    </objects>
++    <resources>
++        <image name="timer" width="32" height="32"/>
++        <systemColor name="systemBackgroundColor">
++            <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
++        </systemColor>
++        <systemColor name="systemGrayColor">
++            <color red="0.55686274509803924" green="0.55686274509803924" blue="0.57647058823529407" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
++        </systemColor>
++    </resources>
++</document>
+diff --git a/BasicsOfSurvival.git/BasicsOfSurvival.git/Component_Kislov_Vadim/Views/PodcastImageView/PodcastImageView.swift b/BasicsOfSurvival.git/BasicsOfSurvival.git/Component_Kislov_Vadim/Views/PodcastImageView/PodcastImageView.swift
+new file mode 100644
+index 0000000..9a53504
+--- /dev/null
++++ b/BasicsOfSurvival.git/BasicsOfSurvival.git/Component_Kislov_Vadim/Views/PodcastImageView/PodcastImageView.swift
+@@ -0,0 +1,66 @@
++//
++//  PodcastImageView.swift
++//  BasicsOfSurvival.git
++//
++//  Created by Kislov Vadim on 22.01.2023.
++//
++
++import UIKit
++
++class PodcastImageView: UIImageView {
++    required init?(coder: NSCoder) {
++        super.init(coder: coder)
++    }
++    
++    override func awakeFromNib() {
++        super.awakeFromNib()
++        
++        self.contentMode = .scaleAspectFill
++        self.backgroundColor = .white
++        self.clipsToBounds = true
++        self.layer.cornerRadius = 7
++    }
++    
++    public func setImage(from urlString: String) {
++        guard let url = URL(string: urlString) else {
++            self.image = UIImage(named: "image-not-found")
++            
++            return
++        }
++        
++        if let cachedImage = getCachedImage(from: url) {
++            self.image = cachedImage
++            
++            return
++        }
++        
++        ImageManager.shared.fetchImage(from: url) { result in
++            switch result {
++            case .success(let (data, response)):
++                self.image = UIImage(data: data)
++                self.saveImageToCache(with: data, and: response)
++            case .failure:
++                self.image = UIImage(named: "image-not-found")
++            }
++        }
++    }
++    
++    private func saveImageToCache(with data: Data, and response: URLResponse) {
++        guard let url = response.url else { return }
++        
++        let request = URLRequest(url: url)
++        let cachedResponse = CachedURLResponse(response: response, data: data)
++        
++        URLCache.shared.storeCachedResponse(cachedResponse, for: request)
++    }
++    
++    private func getCachedImage(from url: URL) -> UIImage? {
++        let request = URLRequest(url: url)
++        
++        if let cachedResponse = URLCache.shared.cachedResponse(for: request) {
++            return UIImage(data: cachedResponse.data)
++        }
++        
++        return nil
++    }
++}
+diff --git a/BasicsOfSurvival.git/BasicsOfSurvival.git/Component_Kislov_Vadim/Views/PodcastsCollectionView/PodcastsCollectionView.swift b/BasicsOfSurvival.git/BasicsOfSurvival.git/Component_Kislov_Vadim/Views/PodcastsCollectionView/PodcastsCollectionView.swift
+new file mode 100644
+index 0000000..dd3ead4
+--- /dev/null
++++ b/BasicsOfSurvival.git/BasicsOfSurvival.git/Component_Kislov_Vadim/Views/PodcastsCollectionView/PodcastsCollectionView.swift
+@@ -0,0 +1,34 @@
++//
++//  PodcastsCollectionView.swift
++//  BasicsOfSurvival.git
++//
++//  Created by Kislov Vadim on 21.01.2023.
++//
++
++import UIKit
++
++class PodcastsCollectionView: UICollectionView {
++    required init?(coder: NSCoder) {
++        super.init(coder: coder)
++    }
++    
++    override func awakeFromNib() {
++        super.awakeFromNib()
++        
++        let layout = UICollectionViewFlowLayout()
++        
++        layout.scrollDirection = .horizontal
++        layout.estimatedItemSize = UICollectionViewFlowLayout.automaticSize
++        
++        self.collectionViewLayout = layout
++        self.clipsToBounds = true
++        self.showsHorizontalScrollIndicator = false
++        
++        self.register(
++            UINib(nibName: PodcastCollectionViewCell.getReuseIdentifier(), bundle: nil),
++            forCellWithReuseIdentifier: PodcastCollectionViewCell.getReuseIdentifier()
++        )
++    }
++}
++
++
+diff --git a/BasicsOfSurvival.git/BasicsOfSurvival.git/Component_Kislov_Vadim/Views/PodcastsView/PodcastsView.swift b/BasicsOfSurvival.git/BasicsOfSurvival.git/Component_Kislov_Vadim/Views/PodcastsView/PodcastsView.swift
+new file mode 100644
+index 0000000..890ced8
+--- /dev/null
++++ b/BasicsOfSurvival.git/BasicsOfSurvival.git/Component_Kislov_Vadim/Views/PodcastsView/PodcastsView.swift
+@@ -0,0 +1,66 @@
++//
++//  PodcastsView.swift
++//  BasicsOfSurvival.git
++//
++//  Created by Kislov Vadim on 22.01.2023.
++//
++
++import UIKit
++
++class PodcastsView: UIView {
++    @IBOutlet var contentView: UIView!
++    @IBOutlet var podcastsCollectionView: PodcastsCollectionView!
++    
++    public var delegate: PodcastsViewDelegate!
++    
++    required init?(coder: NSCoder) {
++        super.init(coder: coder)
++        
++        setupContentView()
++    }
++    
++    override func awakeFromNib() {
++        podcastsCollectionView.delegate = self
++        podcastsCollectionView.dataSource = self
++    }
++    
++    @IBAction func showAllPodcastsAction(_ sender: Any) {
++        delegate.showAllPodcasts()
++    }
++    
++    private func setupContentView() {
++        Bundle.main.loadNibNamed(String(describing: PodcastsView.self), owner: self, options: nil)
++        addSubview(contentView)
++        contentView.frame = self.bounds
++        contentView.autoresizingMask = [.flexibleHeight, .flexibleWidth]
++    }
++}
++
++extension PodcastsView: UICollectionViewDelegate, UICollectionViewDataSource {
++    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
++        let cell = collectionView.cellForItem(at: indexPath)
++
++        UIView.animate(withDuration: 0.2, animations: { cell?.alpha = 0.5 }) { _ in
++            UIView.animate(withDuration: 0.2, animations: { cell?.alpha = 1 })
++            
++            self.delegate.openPodcastUrl(for: indexPath.item)
++        }
++    }
++    
++    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
++        delegate.getPodcastsCount()
++    }
++    
++    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
++        let cell = collectionView.dequeueReusableCell(
++            withReuseIdentifier: PodcastCollectionViewCell.getReuseIdentifier(),
++            for: indexPath
++        ) as! PodcastCollectionViewCell
++        
++        let podcast = delegate.getPodcast(for: indexPath.item)
++        
++        cell.configure(podcast: podcast)
++
++        return cell
++    }
++}
+diff --git a/BasicsOfSurvival.git/BasicsOfSurvival.git/Component_Kislov_Vadim/Views/PodcastsView/PodcastsView.xib b/BasicsOfSurvival.git/BasicsOfSurvival.git/Component_Kislov_Vadim/Views/PodcastsView/PodcastsView.xib
+new file mode 100644
+index 0000000..07f9b37
+--- /dev/null
++++ b/BasicsOfSurvival.git/BasicsOfSurvival.git/Component_Kislov_Vadim/Views/PodcastsView/PodcastsView.xib
+@@ -0,0 +1,69 @@
++<?xml version="1.0" encoding="UTF-8"?>
++<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="21507" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
++    <device id="retina6_12" orientation="portrait" appearance="light"/>
++    <dependencies>
++        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="21505"/>
++        <capability name="System colors in document resources" minToolsVersion="11.0"/>
++        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
++    </dependencies>
++    <objects>
++        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="PodcastsView" customModule="BasicsOfSurvival_git" customModuleProvider="target">
++            <connections>
++                <outlet property="contentView" destination="iN0-l3-epB" id="ehi-Yi-6VQ"/>
++                <outlet property="podcastsCollectionView" destination="bon-IE-DPX" id="EB7-He-vMa"/>
++            </connections>
++        </placeholder>
++        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
++        <view contentMode="scaleToFill" id="iN0-l3-epB">
++            <rect key="frame" x="0.0" y="0.0" width="422" height="274"/>
++            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
++            <subviews>
++                <stackView opaque="NO" contentMode="scaleToFill" distribution="equalSpacing" translatesAutoresizingMaskIntoConstraints="NO" id="oMd-fj-J6e">
++                    <rect key="frame" x="0.0" y="0.0" width="422" height="36"/>
++                    <subviews>
++                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Подкасты" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="BRT-km-szR">
++                            <rect key="frame" x="0.0" y="0.0" width="103.66666666666667" height="36"/>
++                            <fontDescription key="fontDescription" type="boldSystem" pointSize="21"/>
++                            <nil key="textColor"/>
++                            <color key="highlightedColor" red="0.047058823529411764" green="0.054901960784313725" blue="0.0039215686274509803" alpha="1" colorSpace="calibratedRGB"/>
++                        </label>
++                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="7HM-8T-YaQ">
++                            <rect key="frame" x="366.66666666666669" y="0.0" width="55.333333333333314" height="36"/>
++                            <buttonConfiguration key="configuration" style="plain" title="Все">
++                                <fontDescription key="titleFontDescription" type="system" pointSize="18"/>
++                                <color key="baseForegroundColor" red="0.28235294117647058" green="0.40000000000000002" blue="0.16470588235294117" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
++                            </buttonConfiguration>
++                            <connections>
++                                <action selector="showAllPodcastsAction:" destination="-1" eventType="touchUpInside" id="qFG-IG-ctR"/>
++                            </connections>
++                        </button>
++                    </subviews>
++                </stackView>
++                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="bon-IE-DPX" customClass="PodcastsCollectionView" customModule="BasicsOfSurvival_git" customModuleProvider="target">
++                    <rect key="frame" x="0.0" y="44" width="422" height="230"/>
++                    <color key="backgroundColor" systemColor="systemBackgroundColor"/>
++                    <constraints>
++                        <constraint firstAttribute="height" constant="230" id="uCi-lb-tzk"/>
++                    </constraints>
++                </view>
++            </subviews>
++            <color key="backgroundColor" systemColor="systemBackgroundColor"/>
++            <constraints>
++                <constraint firstItem="bon-IE-DPX" firstAttribute="trailing" secondItem="iN0-l3-epB" secondAttribute="trailing" id="2wl-xq-1DC"/>
++                <constraint firstAttribute="trailing" secondItem="oMd-fj-J6e" secondAttribute="trailing" id="3kS-Se-LRn"/>
++                <constraint firstItem="bon-IE-DPX" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" id="6Ou-t0-n2Y"/>
++                <constraint firstItem="oMd-fj-J6e" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" id="JK7-6n-rHU"/>
++                <constraint firstItem="bon-IE-DPX" firstAttribute="bottom" secondItem="iN0-l3-epB" secondAttribute="bottom" id="iLU-Zb-Pl1"/>
++                <constraint firstItem="oMd-fj-J6e" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" id="reD-Af-SLn"/>
++                <constraint firstItem="bon-IE-DPX" firstAttribute="top" secondItem="oMd-fj-J6e" secondAttribute="bottom" constant="8" id="y5i-fz-d6L"/>
++            </constraints>
++            <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
++            <point key="canvasLocation" x="-5912.9770992366412" y="-842.25352112676057"/>
++        </view>
++    </objects>
++    <resources>
++        <systemColor name="systemBackgroundColor">
++            <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
++        </systemColor>
++    </resources>
++</document>
+-- 
+2.37.1 (Apple Git-137.1)
+
